@@ -1,6 +1,10 @@
+
 import com.baidu.aip.http.AipHttpClient;
 import com.baidu.aip.util.Base64Util;
 import com.baidu.aip.util.Util;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.json.HTTP;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,7 +21,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 import java.io.*;
@@ -33,8 +38,10 @@ import java.net.URLEncoder;
  */
 public class Test {
     public static void main(String[] args) {
-        String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate";
-        String fileUrl = "C:\\Users\\LITAO\\Desktop\\)]T5H83O9F943_ZPO}]Y@[B.png";
+
+
+        String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic";
+        String fileUrl = "C:\\Users\\LITAO\\Desktop\\1547003504(1).jpg";
         String parms = null;
         String img = null;
         try {
@@ -58,9 +65,26 @@ public class Test {
         body.put("user_id", "001");
         body.put("image", img);
         String res = postMap(newUrl,header,body);
-        System.out.println(res);
-    }
+        //System.out.println(res);
+        Gson gson = new Gson();
+        String json = gson.toJson(res);
+        //System.out.println("+++++"+json );
+        JSONObject jsonObject = new JSONObject(res);
+        JSONArray words_result = jsonObject.getJSONArray("words_result");
+        int len = words_result.length();
+        for (int i = 0;i<len;i++){
+            System.out.println(words_result.get(i));
+        }
+        Gson gson1 = new Gson();
+        Map<String,Object> map = gson1.fromJson(res, new TypeToken<Map<String,Object>>(){}.getType());
 
+        //System.out.println(map);
+
+
+
+
+
+    }
 
 
     public static String postMap(String url, Map<String, Object> headerMap, Map<String, String> contentMap) {
